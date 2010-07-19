@@ -1,0 +1,55 @@
+## Getting Started on Hadoop
+## Paco Nathan <ceteri@gmail.com>
+##
+## Silicon Valley Cloud Computing Meetup
+## http://www.meetup.com/cloudcomputing/calendar/13911740/
+## Mountain View, 2010-07-19
+
+GitHub src repo:
+    http://github.com/ceteri/ceteri-mapred
+
+Presentation slides in:
+    doc/enron.key
+
+
+See the "WordCount" example at:
+    bin/run_wc.sh
+
+See the "Enron Email Dataset" demo at:
+    bin/run_enron.sh
+
+R statistics demo:
+    thresh.R, thresh.tsv
+
+Gephi graph demo:
+    graph.gephi
+
+
+## to run your own code on Elastic MapReduce
+
+    1. create a bucket in S3
+    2. copy the Python scripts into a "src" folder there
+    3. determine some subset of the email message input
+	cat msgs.tsv | head -1000 > input
+    4. copy "input" to your S3 "src" folder
+    5. follow examples in slide deck, based on params below
+
+
+## Hadoop job flow 1 on Elastic MapReduce
+
+-input s3n://ceteri-mapred/enron/src/input 
+-output s3n://ceteri-mapred/enron/src/output 
+-mapper '"python map_parse.py http://ceteri-mapred.s3.amazonaws.com/ stopwords"'
+-reducer '"python red_idf.py 2500"'
+-cacheFile s3n://ceteri-mapred/enron/src/map_parse.py#map_parse.py
+-cacheFile s3n://ceteri-mapred/enron/src/red_idf.py#red_idf.py
+-cacheFile s3n://ceteri-mapred/enron/src/stopwords#stopwords
+
+## Hadoop job flow 2 on Elastic MapReduce
+
+-input s3n://ceteri-mapred/enron/src/output 
+-output s3n://ceteri-mapred/enron/src/filter 
+-mapper '"python map_filter.py"'
+-reducer '"python red_idf.py 0.0633"'
+-cacheFile s3n://ceteri-mapred/enron/src/map_filter.py#map_filter.py
+-cacheFile s3n://ceteri-mapred/enron/src/red_filter.py#red_filter.py
