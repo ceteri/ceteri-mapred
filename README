@@ -8,8 +8,10 @@
 GitHub src repo:
     http://github.com/ceteri/ceteri-mapred
 
-Presentation slides in:
+Presentation slides available here in Keynote format or 
+online at SlideShare:
     doc/enron.key
+    http://www.slideshare.net/pacoid/getting-started-on-hadoop
 
 
 See the "WordCount" example at:
@@ -53,3 +55,8 @@ Gephi graph demo:
 -reducer '"python red_filter.py 0.0633"'
 -cacheFile s3n://ceteri-mapred/enron/src/map_filter.py#map_filter.py
 -cacheFile s3n://ceteri-mapred/enron/src/red_filter.py#red_filter.py
+
+## after downloading the partition file named "filter" from S3, then
+## run the following command to build a lexicon:
+
+cat filter/part-* | sort -k1 -k4 -nr > lexicon
